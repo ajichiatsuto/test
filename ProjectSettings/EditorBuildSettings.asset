@@ -59,5 +59,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Use Case Samples/Serverless Multiplayer Game/AdditionalScenes/Game.unity
     guid: cf85597d03bc8e54f83e793629866666
+  - enabled: 1
+    path: Assets/Use Case Samples/Serverless Multiplayer Game/AdditionalScenes/SampleScene.unity
+    guid: 33ec78baed4535143bc5d3f4cf6ccfe4
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: c6ca533da370b4f2794f0c63c45e0e6f, type: 2}

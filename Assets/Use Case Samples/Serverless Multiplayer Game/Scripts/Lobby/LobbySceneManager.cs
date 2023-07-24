@@ -97,6 +97,7 @@ namespace Unity.Services.Samples.ServerlessMultiplayerGame
             // ロビーがゲームの開始準備ができている場合は、ゲームシーンに遷移
             if (isGameReady)
             {
+                Debug.Log("Lobby is ready to start the game.");
                 NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
             }
         }
