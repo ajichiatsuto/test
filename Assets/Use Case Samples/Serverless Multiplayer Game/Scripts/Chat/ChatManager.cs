@@ -22,6 +22,7 @@ namespace Unity.Services.Samples.ServerlessMultiplayerGame
         // Start is called before the first frame update
         void Start()
         {
+            LobbyManager.instance.DeleteActiveLobbyNoNotify();
         }
 
         // Update is called once per frame
@@ -53,8 +54,9 @@ namespace Unity.Services.Samples.ServerlessMultiplayerGame
         /// メッセージの書き換え
         /// </summary>
         [ClientRpc]
-        public void DelayedResponseToClient(string response_text)
+        public IEnumerator DelayedResponseToClient(string response_text)
         {
+            yield return new WaitForSeconds(3);
             Debug.Log("Received message from host.");
             message = response_text;
         }
