@@ -10,7 +10,7 @@ using TMPro;
 namespace Unity.Services.Samples.ServerlessMultiplayerGame
 {
     [DisallowMultipleComponent]
-    public class ChatManager : MonoBehaviour
+    public class ChatManager : NetworkBehaviour
     {
         private TextMeshProUGUI chat_text;
         private TMP_InputField chat_input;
@@ -19,10 +19,16 @@ namespace Unity.Services.Samples.ServerlessMultiplayerGame
         public Dictionary<ulong, string> clientResponses = new Dictionary<ulong, string>();
         public string message = "";
         private int countdownDuration = 10;
+
+        [SerializeField]
+        GameNetworkManager gameNetworkManagerPrefab;
+        public static ulong hostRelayClientId => NetworkManager.Singleton.ConnectedClients[0].ClientId;
         // Start is called before the first frame update
         void Start()
         {
             LobbyManager.instance.DeleteActiveLobbyNoNotify();
+            var gameManager = GameObject.Instantiate(gameNetworkManagerPrefab);
+            gameManager.networkObject.SpawnWithOwnership(hostRelayClientId);
         }
 
         // Update is called once per frame
@@ -34,7 +40,7 @@ namespace Unity.Services.Samples.ServerlessMultiplayerGame
             {
                 if (chat_input.text != "")
                 {
-                    SendMessageToHost(chat_input.text);
+                    SendMessageToHostServerRpc(chat_input.text);
                     chat_input.text = "";
                 }
             }
@@ -44,19 +50,18 @@ namespace Unity.Services.Samples.ServerlessMultiplayerGame
         /// <summary>
         /// メッセージの送信
         /// </summary>
-        [ServerRpc]
-        public void SendMessageToHost(string input_text)
+        [ServerRpc(RequireOwnership = false)]
+        public void SendMessageToHostServerRpc(string input_text)
         {
-            Debug.Log("Received message from client.");
-            StartCoroutine(DelayedResponseToClient(input_text));
+            Debug.Log("send message to host.");
+            DelayedResponseToClientClientRpc(input_text);
         }
         /// <summary>
         /// メッセージの書き換え
         /// </summary>
         [ClientRpc]
-        public IEnumerator DelayedResponseToClient(string response_text)
+        public void DelayedResponseToClientClientRpc(string response_text)
         {
-            yield return new WaitForSeconds(3);
             Debug.Log("Received message from host.");
             message = response_text;
         }
